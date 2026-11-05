@@ -1,0 +1,1056 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI-Powered Road Accident Prediction &amp; Emergency Response System</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1f2328;
+    background: #ffffff;
+    padding: 32px 16px 48px;
+  }
+  .container { max-width: 760px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    border-bottom: 2px solid #3b82d4;
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1f2328;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .header .subtitle {
+    font-size: 13px;
+    color: #57606a;
+  }
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-purple { background: #ede9fe; color: #5b21b6; }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-orange { background: #ffedd5; color: #9a3412; }
+  .badge-gray { background: #f3f4f6; color: #374151; }
+
+  /* Sections */
+  .section {
+    margin-bottom: 36px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .section-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #3b82d4;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2328;
+  }
+
+  /* Cards */
+  .card {
+    background: #f7f8fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1f2328;
+    margin-bottom: 6px;
+  }
+  .card p, .card li {
+    font-size: 13px;
+    color: #57606a;
+  }
+  .card ul, .card ol {
+    padding-left: 18px;
+  }
+  .card li { margin-bottom: 2px; }
+
+  /* Grid */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  @media (max-width: 560px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* Agent cards */
+  .agent-card {
+    border-left: 3px solid #3b82d4;
+    background: #f7f8fa;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+  }
+  .agent-card.purple { border-left-color: #7c5cd8; }
+  .agent-card.green  { border-left-color: #16a34a; }
+  .agent-card.orange { border-left-color: #ea580c; }
+  .agent-card.red    { border-left-color: #dc2626; }
+  .agent-card.teal   { border-left-color: #0d9488; }
+  .agent-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1f2328;
+    margin-bottom: 4px;
+  }
+  .agent-card p {
+    font-size: 12px;
+    color: #57606a;
+    margin-bottom: 4px;
+  }
+  .agent-card .tools {
+    font-size: 11px;
+    color: #3b82d4;
+    font-weight: 600;
+  }
+  .agent-card.purple .tools { color: #7c5cd8; }
+  .agent-card.green .tools  { color: #16a34a; }
+  .agent-card.orange .tools { color: #ea580c; }
+  .agent-card.red .tools    { color: #dc2626; }
+  .agent-card.teal .tools   { color: #0d9488; }
+
+  /* Code blocks */
+  pre {
+    background: #1f2328;
+    color: #e6edf3;
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-x: auto;
+    margin-bottom: 12px;
+    font-family: "Consolas", "Courier New", monospace;
+  }
+  code {
+    background: #f0f2f4;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-family: "Consolas", "Courier New", monospace;
+    color: #953800;
+  }
+
+  /* Phase timeline */
+  .phase {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 16px;
+  }
+  .phase::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 24px;
+    bottom: -16px;
+    width: 2px;
+    background: #e5e7eb;
+  }
+  .phase:last-child::before { display: none; }
+  .phase-dot {
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #3b82d4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .phase h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1f2328;
+    margin-bottom: 4px;
+  }
+  .phase .duration {
+    font-size: 11px;
+    color: #57606a;
+    font-style: italic;
+    margin-bottom: 4px;
+  }
+  .phase ul {
+    padding-left: 16px;
+  }
+  .phase li {
+    font-size: 12px;
+    color: #57606a;
+    margin-bottom: 2px;
+  }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+  th {
+    background: #f0f2f4;
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 700;
+    color: #1f2328;
+    border: 1px solid #e5e7eb;
+  }
+  td {
+    padding: 7px 10px;
+    border: 1px solid #e5e7eb;
+    color: #57606a;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f7f8fa; }
+
+  /* Arch diagram */
+  .arch-layer {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+  }
+  .arch-layer .layer-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #57606a;
+    margin-bottom: 6px;
+  }
+  .arch-layer .layer-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .arch-item {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #1f2328;
+  }
+  .arch-arrow {
+    text-align: center;
+    font-size: 16px;
+    color: #57606a;
+    margin: 2px 0;
+  }
+
+  /* Workflow */
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    background: #f7f8fa;
+  }
+  .flow-step .step-num {
+    min-width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #3b82d4;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+  .flow-step .step-content { flex: 1; }
+  .flow-step .step-content strong {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1f2328;
+    margin-bottom: 2px;
+  }
+  .flow-step .step-content span {
+    font-size: 12px;
+    color: #57606a;
+  }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 40px;
+    padding-top: 12px;
+    text-align: center;
+    font-size: 12px;
+    color: #57606a;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  
+  <div class="header">
+    <h1>AI-Powered Road Accident Prediction &amp;<br />Emergency Response System</h1>
+    <div class="subtitle">Complete Development Plan — Agentic AI Project using IBM Bob</div>
+    <div class="badge-row">
+      <span class="badge badge-blue">Multi-Agent System</span>
+      <span class="badge badge-purple">IBM Bob Agentic AI</span>
+      <span class="badge badge-green">MCP Integration</span>
+      <span class="badge badge-orange">LLM Gateway</span>
+      <span class="badge badge-gray">Production Deployment</span>
+    </div>
+  </div>
+
+  
+  
+  
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">1</span>
+      <h2>Complete System Architecture</h2>
+    </div>
+
+    <div class="arch-layer" style="border-color:#3b82d4;background:#eff6ff">
+      <div class="layer-label" style="color:#1d4ed8">Presentation Layer (Frontend)</div>
+      <div class="layer-items">
+        <span class="arch-item">React + TypeScript Dashboard</span>
+        <span class="arch-item">Leaflet.js Heatmaps</span>
+        <span class="arch-item">Chart.js Analytics</span>
+        <span class="arch-item">Real-Time WebSocket Feed</span>
+        <span class="arch-item">Admin Panel</span>
+      </div>
+    </div>
+    <div class="arch-arrow">↕</div>
+
+    <div class="arch-layer" style="border-color:#7c5cd8;background:#faf5ff">
+      <div class="layer-label" style="color:#5b21b6">API Gateway &amp; Auth Layer</div>
+      <div class="layer-items">
+        <span class="arch-item">FastAPI REST Gateway</span>
+        <span class="arch-item">JWT Auth + OAuth2</span>
+        <span class="arch-item">Rate Limiting</span>
+        <span class="arch-item">Guardrails Middleware</span>
+        <span class="arch-item">HTTPS / TLS</span>
+      </div>
+    </div>
+    <div class="arch-arrow">↕</div>
+
+    <div class="arch-layer" style="border-color:#16a34a;background:#f0fdf4">
+      <div class="layer-label" style="color:#166534">Agentic AI Orchestration Layer (IBM Bob)</div>
+      <div class="layer-items">
+        <span class="arch-item">Orchestrator Agent</span>
+        <span class="arch-item">Traffic Analysis Agent</span>
+        <span class="arch-item">Accident Risk Prediction Agent</span>
+        <span class="arch-item">Road Condition Agent</span>
+        <span class="arch-item">Hotspot Detection Agent</span>
+        <span class="arch-item">Emergency Response Agent</span>
+        <span class="arch-item">Ambulance Coordination Agent</span>
+      </div>
+    </div>
+    <div class="arch-arrow">↕</div>
+
+    <div class="arch-layer" style="border-color:#ea580c;background:#fff7ed">
+      <div class="layer-label" style="color:#9a3412">LLM Gateway &amp; Tool Layer</div>
+      <div class="layer-items">
+        <span class="arch-item">IBM watsonx (Granite)</span>
+        <span class="arch-item">AWS Bedrock (Claude)</span>
+        <span class="arch-item">Google Vertex AI (Gemini)</span>
+        <span class="arch-item">MCP Tool Server</span>
+        <span class="arch-item">Token Cost Monitor</span>
+      </div>
+    </div>
+    <div class="arch-arrow">↕</div>
+
+    <div class="arch-layer" style="border-color:#0d9488;background:#f0fdfa">
+      <div class="layer-label" style="color:#0f766e">Data &amp; Intelligence Layer</div>
+      <div class="layer-items">
+        <span class="arch-item">PostgreSQL (primary)</span>
+        <span class="arch-item">Chroma / pgvector (vector DB)</span>
+        <span class="arch-item">Redis (session + cache)</span>
+        <span class="arch-item">ML Model Store (scikit-learn / XGBoost)</span>
+        <span class="arch-item">Weather API</span>
+        <span class="arch-item">OpenStreetMap</span>
+      </div>
+    </div>
+    <div class="arch-arrow">↕</div>
+
+    <div class="arch-layer" style="border-color:#57606a;background:#f7f8fa">
+      <div class="layer-label">Observability &amp; Governance Layer</div>
+      <div class="layer-items">
+        <span class="arch-item">LangSmith / Phoenix Tracing</span>
+        <span class="arch-item">Prometheus + Grafana</span>
+        <span class="arch-item">Human-in-the-Loop Review</span>
+        <span class="arch-item">AI Governance Policies</span>
+        <span class="arch-item">Audit Logs</span>
+      </div>
+    </div>
+    <div class="arch-arrow">↕</div>
+
+    <div class="arch-layer" style="border-color:#1f2328;background:#f7f8fa">
+      <div class="layer-label">Deployment Layer</div>
+      <div class="layer-items">
+        <span class="arch-item">Red Hat OpenShift / Kubernetes</span>
+        <span class="arch-item">Docker Containers</span>
+        <span class="arch-item">CI/CD (GitHub Actions)</span>
+        <span class="arch-item">Nginx Ingress</span>
+        <span class="arch-item">IBM Cloud / AWS</span>
+      </div>
+    </div>
+  </div>
+
+  
+  
+  
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">2</span>
+      <h2>Technology Stack</h2>
+    </div>
+    <table>
+      <thead><tr><th>Category</th><th>Technology</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Agentic AI Platform</strong></td><td>IBM Bob (Agent Mode)</td><td>Multi-agent orchestration, code generation, MCP</td></tr>
+        <tr><td><strong>Backend Framework</strong></td><td>Python 3.12 + FastAPI</td><td>REST API, WebSocket, async agent communication</td></tr>
+        <tr><td><strong>Agent Framework</strong></td><td>LangGraph + LangChain</td><td>Agent state machines, memory, tool binding</td></tr>
+        <tr><td><strong>LLM Gateway</strong></td><td>IBM Bob Model Gateway</td><td>Unified proxy: watsonx, Bedrock, Vertex AI</td></tr>
+        <tr><td><strong>LLM Providers</strong></td><td>IBM watsonx Granite, AWS Bedrock Claude Sonnet, Google Gemini Flash</td><td>Multi-provider LLM integration</td></tr>
+        <tr><td><strong>MCP Server</strong></td><td>Custom Python MCP Server</td><td>Traffic tools, weather tools, geo-lookup tools</td></tr>
+        <tr><td><strong>Primary Database</strong></td><td>PostgreSQL 16 + PostGIS</td><td>Accident records, traffic data, geospatial queries</td></tr>
+        <tr><td><strong>Vector Database</strong></td><td>pgvector / ChromaDB</td><td>Agent memory, semantic search, RAG for accident history</td></tr>
+        <tr><td><strong>Cache / Session</strong></td><td>Redis 7</td><td>Agent session state, rate limiting, real-time feeds</td></tr>
+        <tr><td><strong>ML Models</strong></td><td>scikit-learn, XGBoost, SHAP</td><td>Accident risk prediction, hotspot clustering</td></tr>
+        <tr><td><strong>Frontend</strong></td><td>React 18 + TypeScript + Vite</td><td>Interactive dashboard</td></tr>
+        <tr><td><strong>Maps</strong></td><td>Leaflet.js + OpenStreetMap</td><td>Accident heatmaps, route visualization</td></tr>
+        <tr><td><strong>Charts</strong></td><td>Chart.js / Recharts</td><td>Traffic density, risk trends</td></tr>
+        <tr><td><strong>Observability</strong></td><td>LangSmith, Prometheus, Grafana</td><td>Agent tracing, metrics, cost monitoring</td></tr>
+        <tr><td><strong>Auth</strong></td><td>Keycloak + JWT</td><td>User registration, SSO, RBAC</td></tr>
+        <tr><td><strong>Guardrails</strong></td><td>NeMo Guardrails / custom middleware</td><td>Input/output safety, policy enforcement</td></tr>
+        <tr><td><strong>Containerization</strong></td><td>Docker + Kubernetes / OpenShift</td><td>Deployment, scaling</td></tr>
+        <tr><td><strong>CI/CD</strong></td><td>GitHub Actions</td><td>Build, test, deploy pipeline</td></tr>
+        <tr><td><strong>Weather Data</strong></td><td>OpenWeatherMap API</td><td>Weather-based risk analysis</td></tr>
+        <tr><td><strong>Traffic Data</strong></td><td>Simulated (Faker) + HERE Maps API</td><td>Traffic density simulation and real data</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  
+  
+  
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">3</span>
+      <h2>Project Folder Structure</h2>
+    </div>
+    <pre>
+road-accident-ai/
+├── .bob/
+│   ├── custom_modes.yaml          # Custom IBM Bob mode
+│   └── AGENTS.md                  # Project context for Bob
+├── backend/
+│   ├── app/
+│   │   ├── main.py                # FastAPI app entrypoint
+│   │   ├── config.py              # Settings, env vars
+│   │   ├── api/
+│   │   │   ├── routes/
+│   │   │   │   ├── auth.py        # Login, register
+│   │   │   │   ├── accidents.py   # Accident reports CRUD
+│   │   │   │   ├── traffic.py     # Traffic data endpoints
+│   │   │   │   ├── emergency.py   # Emergency response
+│   │   │   │   ├── ambulance.py   # Ambulance coordination
+│   │   │   │   └── admin.py       # Admin dashboard APIs
+│   │   │   └── middleware/
+│   │   │       ├── auth.py        # JWT middleware
+│   │   │       └── guardrails.py  # Input/output guardrails
+│   │   ├── agents/
+│   │   │   ├── orchestrator.py    # Master orchestrator agent
+│   │   │   ├── traffic_agent.py   # Traffic Data Analysis Agent
+│   │   │   ├── risk_agent.py      # Accident Risk Prediction Agent
+│   │   │   ├── road_agent.py      # Road Condition Monitoring Agent
+│   │   │   ├── hotspot_agent.py   # Accident Hotspot Detection Agent
+│   │   │   ├── emergency_agent.py # Emergency Response Agent
+│   │   │   ├── ambulance_agent.py # Ambulance Coordination Agent
+│   │   │   ├── memory/
+│   │   │   │   ├── vector_store.py  # ChromaDB / pgvector
+│   │   │   │   └── session_store.py # Redis session memory
+│   │   │   └── tools/
+│   │   │       ├── geo_tools.py   # Geospatial utilities
+│   │   │       ├── weather_tools.py
+│   │   │       └── traffic_tools.py
+│   │   ├── mcp_server/
+│   │   │   ├── server.py          # MCP server (JSON-RPC 2.0)
+│   │   │   ├── tools/
+│   │   │   │   ├── traffic_mcp.py
+│   │   │   │   ├── weather_mcp.py
+│   │   │   │   ├── geo_mcp.py
+│   │   │   │   └── ambulance_mcp.py
+│   │   │   └── mcp_config.yaml
+│   │   ├── ml/
+│   │   │   ├── risk_model.py      # XGBoost risk prediction
+│   │   │   ├── hotspot_model.py   # DBSCAN clustering
+│   │   │   ├── train.py           # Model training scripts
+│   │   │   └── models/            # Serialized model files
+│   │   ├── db/
+│   │   │   ├── database.py        # SQLAlchemy engine
+│   │   │   ├── models.py          # ORM models
+│   │   │   └── migrations/        # Alembic migrations
+│   │   ├── llm_gateway/
+│   │   │   ├── gateway.py         # Multi-LLM routing
+│   │   │   ├── cost_monitor.py    # Token cost tracking
+│   │   │   └── gateway_config.yaml
+│   │   ├── observability/
+│   │   │   ├── tracer.py          # LangSmith tracing
+│   │   │   ├── metrics.py         # Prometheus metrics
+│   │   │   └── evaluator.py       # Agent performance eval
+│   │   ├── governance/
+│   │   │   ├── hitl.py            # Human-in-the-Loop
+│   │   │   └── policies.yaml      # AI governance rules
+│   │   └── data/
+│   │       ├── simulator.py       # Traffic/accident simulator
+│   │       └── datasets/          # Historical accident data
+│   ├── tests/
+│   │   ├── test_agents.py
+│   │   ├── test_api.py
+│   │   └── test_ml.py
+│   ├── requirements.txt
+│   └── Dockerfile
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Dashboard/
+│   │   │   ├── HeatMap/
+│   │   │   ├── TrafficMonitor/
+│   │   │   ├── EmergencyPanel/
+│   │   │   ├── AmbulanceTracker/
+│   │   │   └── AdminPanel/
+│   │   ├── pages/
+│   │   ├── hooks/
+│   │   ├── services/api.ts
+│   │   └── App.tsx
+│   ├── package.json
+│   └── Dockerfile
+├── infra/
+│   ├── kubernetes/
+│   │   ├── namespace.yaml
+│   │   ├── backend-deployment.yaml
+│   │   ├── frontend-deployment.yaml
+│   │   ├── mcp-deployment.yaml
+│   │   └── ingress.yaml
+│   ├── docker-compose.yml
+│   └── nginx.conf
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yaml
+├── AGENTS.md
+└── README.md</pre>
+  </div>
+
+  
+  
+  
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">4</span>
+      <h2>Database Design</h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>users</h3>
+        <ul>
+          <li>id, email, password_hash</li>
+          <li>role (ADMIN / OFFICER / PUBLIC)</li>
+          <li>name, phone, created_at</li>
+          <li>is_active, last_login</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>accident_reports</h3>
+        <ul>
+          <li>id, reported_by (FK users)</li>
+          <li>lat, lng (POINT/PostGIS)</li>
+          <li>severity (LOW/MED/HIGH/CRITICAL)</li>
+          <li>description, timestamp</li>
+          <li>is_confirmed (bool) — predicted vs real</li>
+          <li>source (USER / AI_PREDICTED)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>traffic_records</h3>
+        <ul>
+          <li>id, location (POINT)</li>
+          <li>density_score (0–100)</li>
+          <li>avg_speed_kmh</li>
+          <li>congestion_level</li>
+          <li>vehicle_count, timestamp</li>
+          <li>is_simulated (bool)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>road_conditions</h3>
+        <ul>
+          <li>id, location (POINT)</li>
+          <li>pothole_count, visibility</li>
+          <li>surface_quality (0–10)</li>
+          <li>weather_condition</li>
+          <li>risk_score, recorded_at</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>accident_hotspots</h3>
+        <ul>
+          <li>id, center_lat, center_lng</li>
+          <li>radius_m, risk_level</li>
+          <li>incident_count (last 90d)</li>
+          <li>last_updated</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>emergency_responses</h3>
+        <ul>
+          <li>id, accident_report_id (FK)</li>
+          <li>recommended_action (TEXT)</li>
+          <li>ai_recommendation (JSON)</li>
+          <li>human_approved (bool) — HITL</li>
+          <li>approved_by, response_time_s</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>ambulances</h3>
+        <ul>
+          <li>id, unit_code, status</li>
+          <li>current_lat, current_lng</li>
+          <li>hospital_base, crew_count</li>
+          <li>is_simulated (bool)</li>
+          <li>last_updated</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>agent_memory (vector)</h3>
+        <ul>
+          <li>id, agent_id, session_id</li>
+          <li>content (TEXT)</li>
+          <li>embedding (vector 1536)</li>
+          <li>metadata (JSONB)</li>
+          <li>created_at</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>token_usage_logs (cost monitoring)</h3>
+      <ul style="display:flex;flex-wrap:wrap;gap:12px;list-style:none;padding-left:0">
+        <li>id</li><li>agent_id</li><li>model_name</li><li>provider</li>
+        <li>prompt_tokens</li><li>completion_tokens</li><li>cost_usd</li><li>timestamp</li>
+      </ul>
+    </div>
+  </div>
+
+  
+  
+  
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">5</span>
+      <h2>AI Agent Communication Workflow</h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="agent-card">
+        <h3>Orchestrator Agent</h3>
+        <p>Routes user requests to specialist agents. Aggregates results. Manages HITL approvals. Uses IBM watsonx Granite.</p>
+        <div class="tools">LLM: watsonx Granite-3 | Memory: Redis + pgvector</div>
+      </div>
+      <div class="agent-card purple">
+        <h3>Traffic Data Analysis Agent</h3>
+        <p>Analyzes density, speed, congestion from live/simulated traffic feeds. Outputs structured traffic reports.</p>
+        <div class="tools">LLM: Gemini Flash | MCP: traffic_mcp, geo_mcp</div>
+      </div>
+      <div class="agent-card green">
+        <h3>Accident Risk Prediction Agent</h3>
+        <p>Invokes XGBoost model. Considers weather + traffic + road conditions. Returns risk score 0–100 with explanation.</p>
+        <div class="tools">LLM: Claude Sonnet | MCP: weather_mcp | ML: XGBoost</div>
+      </div>
+      <div class="agent-card orange">
+        <h3>Road Condition Monitoring Agent</h3>
+        <p>Processes road surface data, pothole reports, visibility. Flags high-risk road segments.</p>
+        <div class="tools">LLM: Gemini Flash | MCP: geo_mcp, weather_mcp</div>
+      </div>
+      <div class="agent-card red">
+        <h3>Accident Hotspot Detection Agent</h3>
+        <p>Runs DBSCAN clustering on historical accident data. Generates heatmap coordinates for the frontend.</p>
+        <div class="tools">LLM: watsonx Granite | ML: DBSCAN + scikit-learn</div>
+      </div>
+      <div class="agent-card teal">
+        <h3>Emergency Response Agent</h3>
+        <p>Analyzes accident reports and recommends response actions. Sends to HITL queue for human approval before dispatch.</p>
+        <div class="tools">LLM: Claude Sonnet | Guardrails: NeMo | HITL: yes</div>
+      </div>
+      <div class="agent-card purple">
+        <h3>Ambulance Coordination Agent</h3>
+        <p>Queries ambulance availability. Computes optimal routes using real-time traffic data. Clearly labels simulated vs real data.</p>
+        <div class="tools">LLM: Gemini Flash | MCP: ambulance_mcp, geo_mcp</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:8px">
+      <h3>Agent Communication Flow (per emergency event)</h3>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>User / Sensor triggers accident report</strong>
+        <span>REST API receives report. Guardrails middleware validates input. JWT auth verified.</span>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>Orchestrator Agent receives task</strong>
+        <span>Routes to Traffic Agent, Risk Prediction Agent, and Road Condition Agent in parallel via LangGraph fan-out.</span>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>Specialist Agents execute via MCP tools</strong>
+        <span>Each agent calls its MCP tools (weather, geo, traffic). Results stored in agent memory (pgvector).</span>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>Hotspot Agent updates heatmap</strong>
+        <span>Re-clusters accident data. Pushes updated heatmap coordinates to frontend via WebSocket.</span>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <strong>Emergency Response Agent generates recommendation</strong>
+        <span>Aggregates all agent outputs. Generates action plan with LLM. NeMo guardrails screen output.</span>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">6</div>
+      <div class="step-content">
+        <strong>Human-in-the-Loop review (HITL)</strong>
+        <span>High-severity recommendations sent to admin dashboard for human approval before dispatch notification.</span>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">7</div>
+      <div class="step-content">
+        <strong>Ambulance Coordination Agent dispatches</strong>
+        <span>Identifies nearest available (real/simulated) ambulance. Computes optimal route. Labels data source clearly.</span>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">8</div>
+      <div class="step-content">
+        <strong>Observability &amp; cost logging</strong>
+        <span>All LLM calls traced via LangSmith. Tokens logged to token_usage_logs. Prometheus metrics updated.</span>
+      </div>
+    </div>
+  </div>
+
+  
+  
+  
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">6</span>
+      <h2>Dataset Requirements</h2>
+    </div>
+    <table>
+      <thead><tr><th>Dataset</th><th>Source</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td>Historical Road Accidents</td><td>UK STATS19, NHTSA (US), Kaggle Road Accident Dataset</td><td>XGBoost risk model training, hotspot clustering</td></tr>
+        <tr><td>Traffic Density Data</td><td>Simulated (Faker + Python) — or HERE Maps API</td><td>Traffic analysis agent, congestion visualization</td></tr>
+        <tr><td>Weather Data</td><td>OpenWeatherMap API (free tier)</td><td>Weather-based risk factor for prediction model</td></tr>
+        <tr><td>Road Condition Data</td><td>Simulated JSON (pothole severity, road quality) + OpenStreetMap</td><td>Road Condition Monitoring Agent</td></tr>
+        <tr><td>Geographical Data</td><td>OpenStreetMap + Nominatim geocoding</td><td>Heatmaps, route calculations</td></tr>
+        <tr><td>Ambulance Availability</td><td>Simulated fleet data (clearly labeled IS_SIMULATED=true)</td><td>Ambulance Coordination Agent</td></tr>
+        <tr><td>Emergency Response Logs</td><td>Synthetic records generated during development</td><td>Agent memory seeding, RAG context</td></tr>
+      </tbody>
+    </table>
+    <div class="card" style="border-left:3px solid #ea580c">
+      <h3>Data Labeling Policy</h3>
+      <p>All AI-predicted risk values carry <code>source: "AI_PREDICTED"</code>. All confirmed accidents carry <code>source: "CONFIRMED"</code>. All simulated ambulance/traffic records carry <code>is_simulated: true</code> with a visible badge in the UI. This distinction is enforced at the API and database level.</p>
+    </div>
+  </div>
+
+  
+  
+  
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">7</span>
+      <h2>Implementation Phases</h2>
+    </div>
+
+    <div class="phase">
+      <div class="phase-dot">1</div>
+      <h3>Phase 1 — Foundation &amp; Project Setup</h3>
+      <div class="duration">Week 1</div>
+      <ul>
+        <li>Initialize GitHub repo, Docker Compose, PostgreSQL + PostGIS + Redis</li>
+        <li>Configure IBM Bob with custom <code>AGENTS.md</code> and custom mode in <code>.bob/custom_modes.yaml</code></li>
+        <li>Set up FastAPI skeleton with JWT auth + Keycloak</li>
+        <li>Create database ORM models and Alembic migrations</li>
+        <li>Configure IBM Bob Model Gateway (watsonx + Bedrock + Vertex)</li>
+        <li>Seed accident datasets from Kaggle/STATS19 into PostgreSQL</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-dot">2</div>
+      <h3>Phase 2 — ML Models &amp; Data Layer</h3>
+      <div class="duration">Week 2</div>
+      <ul>
+        <li>Train XGBoost accident risk prediction model (features: weather, time, traffic, road quality)</li>
+        <li>Implement DBSCAN hotspot clustering model</li>
+        <li>Build traffic data simulator (Faker-based) and weather API integration</li>
+        <li>Set up ChromaDB/pgvector for agent memory and RAG</li>
+        <li>Serialize and store trained models in <code>backend/app/ml/models/</code></li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-dot">3</div>
+      <h3>Phase 3 — MCP Server &amp; LLM Gateway</h3>
+      <div class="duration">Week 3</div>
+      <ul>
+        <li>Build custom MCP server with JSON-RPC 2.0 (traffic, weather, geo, ambulance tools)</li>
+        <li>Register MCP server in IBM Bob <code>.bob/</code> configuration</li>
+        <li>Configure Model Gateway YAML with watsonx Granite, Claude Sonnet, Gemini Flash</li>
+        <li>Implement token cost monitor and usage logging (token_usage_logs table)</li>
+        <li>Test LLM routing and fallback strategies</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-dot">4</div>
+      <h3>Phase 4 — Multi-Agent System</h3>
+      <div class="duration">Week 4–5</div>
+      <ul>
+        <li>Build all 6 specialist agents + Orchestrator using LangGraph state machines</li>
+        <li>Implement agent memory (Redis session + pgvector long-term)</li>
+        <li>Wire agents to MCP tools and ML models</li>
+        <li>Implement NeMo Guardrails for input/output safety screening</li>
+        <li>Implement Human-in-the-Loop (HITL) approval queue for emergency actions</li>
+        <li>Write AI governance policies YAML (agent control, escalation rules)</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-dot">5</div>
+      <h3>Phase 5 — REST API &amp; WebSocket Layer</h3>
+      <div class="duration">Week 5</div>
+      <ul>
+        <li>Implement all FastAPI routes (auth, accidents, traffic, emergency, ambulance, admin)</li>
+        <li>Add WebSocket endpoint for real-time dashboard feeds</li>
+        <li>Implement guardrails middleware for all public endpoints</li>
+        <li>Add rate limiting and RBAC enforcement</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-dot">6</div>
+      <h3>Phase 6 — Frontend Dashboard</h3>
+      <div class="duration">Week 6</div>
+      <ul>
+        <li>Build React dashboard with traffic monitoring, risk indicators, heatmap</li>
+        <li>Integrate Leaflet.js accident hotspot heatmaps</li>
+        <li>Build emergency reporting form and HITL approval UI</li>
+        <li>Build ambulance coordination dashboard (clearly labeled simulated vs real)</li>
+        <li>Build admin panel with analytics, alert management, token cost view</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-dot">7</div>
+      <h3>Phase 7 — Observability &amp; Evaluation</h3>
+      <div class="duration">Week 7</div>
+      <ul>
+        <li>Integrate LangSmith for full agent trace capture</li>
+        <li>Configure Prometheus metrics + Grafana dashboards</li>
+        <li>Build agent performance evaluator (accuracy, latency, cost per query)</li>
+        <li>Write evaluation test suite using LangSmith datasets</li>
+        <li>Document AI governance and audit logs</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-dot">8</div>
+      <h3>Phase 8 — Testing &amp; Deployment</h3>
+      <div class="duration">Week 8</div>
+      <ul>
+        <li>Write unit + integration tests for agents, API, ML models</li>
+        <li>Build Kubernetes/OpenShift manifests for all services</li>
+        <li>Configure GitHub Actions CI/CD pipeline (lint, test, build, push, deploy)</li>
+        <li>Configure Nginx ingress with TLS termination</li>
+        <li>Deploy to IBM Cloud (or AWS) and run end-to-end acceptance tests</li>
+      </ul>
+    </div>
+  </div>
+
+  
+  
+  
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">8</span>
+      <h2>Deployment Architecture</h2>
+    </div>
+
+    <table>
+      <thead><tr><th>Service</th><th>Container</th><th>Replicas</th><th>Resources</th></tr></thead>
+      <tbody>
+        <tr><td>Frontend (React)</td><td><code>frontend:latest</code></td><td>2</td><td>0.5 CPU / 256 MB</td></tr>
+        <tr><td>Backend API (FastAPI)</td><td><code>backend:latest</code></td><td>3</td><td>1 CPU / 512 MB</td></tr>
+        <tr><td>Agent Orchestrator</td><td><code>agents:latest</code></td><td>2</td><td>2 CPU / 1 GB</td></tr>
+        <tr><td>MCP Server</td><td><code>mcp-server:latest</code></td><td>2</td><td>0.5 CPU / 256 MB</td></tr>
+        <tr><td>PostgreSQL + PostGIS</td><td><code>postgres:16-postgis</code></td><td>1 (+ replica)</td><td>2 CPU / 2 GB</td></tr>
+        <tr><td>Redis</td><td><code>redis:7-alpine</code></td><td>1</td><td>0.5 CPU / 256 MB</td></tr>
+        <tr><td>ChromaDB</td><td><code>chromadb:latest</code></td><td>1</td><td>1 CPU / 512 MB</td></tr>
+        <tr><td>Prometheus</td><td><code>prom/prometheus</code></td><td>1</td><td>0.5 CPU / 512 MB</td></tr>
+        <tr><td>Grafana</td><td><code>grafana/grafana</code></td><td>1</td><td>0.5 CPU / 256 MB</td></tr>
+        <tr><td>Keycloak</td><td><code>quay.io/keycloak/keycloak</code></td><td>1</td><td>1 CPU / 512 MB</td></tr>
+      </tbody>
+    </table>
+
+    <div class="card">
+      <h3>IBM Bob Model Gateway Configuration Summary</h3>
+      <p style="margin-bottom:8px">Three LLM providers configured in the Model Gateway YAML:</p>
+      <ul>
+        <li><strong>watsonx Granite-3</strong> — Orchestrator + Hotspot Detection Agent (primary / cost-optimal)</li>
+        <li><strong>AWS Bedrock Claude Sonnet 5</strong> — Risk Prediction Agent + Emergency Response Agent (reasoning-heavy)</li>
+        <li><strong>Google Vertex AI Gemini Flash</strong> — Traffic Agent + Road Condition Agent + Ambulance Agent (fast / low-latency)</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-left:3px solid #3b82d4">
+      <h3>CI/CD Pipeline (GitHub Actions)</h3>
+      <ol>
+        <li><strong>PR</strong>: lint (ruff, eslint) + unit tests + type check</li>
+        <li><strong>Merge to main</strong>: Docker build + push to IBM Container Registry</li>
+        <li><strong>Deploy to staging</strong>: kubectl apply -k infra/kubernetes/ (staging namespace)</li>
+        <li><strong>E2E tests</strong>: Playwright + pytest integration suite</li>
+        <li><strong>Promote to production</strong>: manual gate + kubectl rollout (production namespace)</li>
+      </ol>
+    </div>
+  </div>
+
+  
+  
+  
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number" style="background:#7c5cd8">★</span>
+      <h2>IBM Bob Agentic AI Integration Details</h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="card" style="border-left:3px solid #3b82d4">
+        <h3>Custom Bob Mode</h3>
+        <p>A workspace-scoped custom mode <code>road-safety-ai</code> in <code>.bob/custom_modes.yaml</code> with Agent + MCP + execute permissions and a road safety expert persona for all development tasks.</p>
+      </div>
+      <div class="card" style="border-left:3px solid #7c5cd8">
+        <h3>AGENTS.md Context</h3>
+        <p><code>.bob/AGENTS.md</code> documents the full system architecture, agent responsibilities, DB schema, and coding conventions so IBM Bob has precise project context on every task.</p>
+      </div>
+      <div class="card" style="border-left:3px solid #16a34a">
+        <h3>MCP Tool Server</h3>
+        <p>Custom Python MCP server exposing 4 tool groups: <code>traffic_tools</code>, <code>weather_tools</code>, <code>geo_tools</code>, <code>ambulance_tools</code>. Registered in Bob's MCP config for live agent use.</p>
+      </div>
+      <div class="card" style="border-left:3px solid #ea580c">
+        <h3>Model Gateway</h3>
+        <p>IBM Bob Enterprise Model Gateway routes to 3 providers (watsonx, Bedrock, Vertex). Token usage and costs logged per agent. Static router ensures each agent uses its optimized model.</p>
+      </div>
+      <div class="card" style="border-left:3px solid #dc2626">
+        <h3>Guardrails</h3>
+        <p>NeMo Guardrails screens all agent inputs/outputs. Provider-level guardrails (Bedrock guardrailConfig) for frontier models. Custom safety rules for emergency dispatch actions.</p>
+      </div>
+      <div class="card" style="border-left:3px solid #0d9488">
+        <h3>Observability</h3>
+        <p>LangSmith captures every agent trace. Prometheus collects response latency and error rates. Grafana dashboards for traffic authorities. LangSmith datasets power automated evaluation.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+  <div class="card" style="background:#eff6ff;border-color:#3b82d4">
+    <h3 style="color:#1d4ed8">Development Execution Order (Step-by-Step Build)</h3>
+    <ol style="color:#1f2328;padding-left:18px">
+      <li>Create <code>.bob/custom_modes.yaml</code> + <code>AGENTS.md</code></li>
+      <li>Scaffold backend FastAPI + DB migrations + Docker Compose</li>
+      <li>Configure IBM Bob Model Gateway YAML (3 providers)</li>
+      <li>Build and register custom MCP server</li>
+      <li>Train ML models (XGBoost risk, DBSCAN hotspot)</li>
+      <li>Implement all 6 agents + orchestrator with LangGraph</li>
+      <li>Wire agents to MCP tools, vector memory, guardrails, HITL</li>
+      <li>Build REST API routes + WebSocket real-time feed</li>
+      <li>Build React frontend dashboard with heatmaps + admin panel</li>
+      <li>Set up LangSmith tracing + Prometheus/Grafana observability</li>
+      <li>Write tests (unit + integration + evaluation)</li>
+      <li>Build Kubernetes manifests + GitHub Actions CI/CD</li>
+      <li>Deploy to IBM Cloud / AWS + run acceptance tests</li>
+    </ol>
+  </div>
+
+  <div class="footer">
+    Made with IBM Bob
+  </div>
+</div>
+</body>
+</html>

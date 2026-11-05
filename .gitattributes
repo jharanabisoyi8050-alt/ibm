@@ -1,0 +1,19 @@
+* text=auto
+
+# Python
+*.py text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+
+# TypeScript/JavaScript
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+
+# Docker
+Dockerfile text eol=lf
+
+# Secrets and env — never commit real .env files
+.env diff=env

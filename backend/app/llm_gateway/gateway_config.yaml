@@ -1,0 +1,102 @@
+# IBM Bob Model Gateway Configuration
+# Routes agents to their designated LLM providers
+# Compatible with IBM Bob Enterprise on-premises Model Gateway
+
+x-providers:
+  # IBM watsonx - for Orchestrator and Hotspot agents
+  watsonx: &watsonx
+    openai_compatible:
+      model: ibm/granite-3-8b-instruct
+      base_url: https://us-south.ml.cloud.ibm.com/ml/v1/text/generation
+      api_key: env.WATSONX_API_KEY
+    model_info:
+      exposed: true
+      provider: ibm
+      family: granite
+      version: "3-8b-instruct"
+      max_input_tokens: 8192
+      max_output_tokens: 2048
+      supports_vision: false
+      mode: chat
+
+  # AWS Bedrock - Claude Sonnet for Risk and Emergency agents
+  bedrock: &bedrock
+    bedrock:
+      model: us.anthropic.claude-sonnet-4-5
+      region: us-east-1
+      access_key_id: env.AWS_ACCESS_KEY
+      secret_access_key: env.AWS_SECRET_ACCESS_KEY
+    model_info:
+      exposed: true
+      provider: anthropic
+      family: claude
+      version: "sonnet-4-5"
+      max_input_tokens: 200000
+      max_output_tokens: 4096
+      supports_prompt_caching: true
+      supports_vision: true
+      mode: chat
+    chat_inference_params:
+      guardrailConfig:
+        guardrailIdentifier: env.BEDROCK_GUARDRAIL_ID
+        guardrailVersion: "DRAFT"
+
+  # Google Vertex AI - Gemini Flash for Traffic, Road, Ambulance agents
+  gemini: &gemini
+    vertex:
+      model: gemini-2.0-flash
+      project: env.GCP_PROJECT_ID
+      location: global
+      credentials: env.GEMINI_CREDENTIALS
+    model_info:
+      exposed: true
+      provider: google
+      family: gemini
+      version: "2.0-flash"
+      max_input_tokens: 1048576
+      max_output_tokens: 8192
+      supports_prompt_caching: true
+      supports_vision: true
+      mode: chat
+
+models:
+  # Orchestrator Agent - watsonx Granite
+  - &orchestrator_model
+    <<: *watsonx
+    model_name: orchestrator
+
+  # Hotspot Detection Agent - watsonx Granite
+  - <<: *watsonx
+    model_name: hotspot
+
+  # Risk Prediction Agent - Claude Sonnet
+  - &risk_model
+    <<: *bedrock
+    model_name: risk
+
+  # Emergency Response Agent - Claude Sonnet
+  - <<: *bedrock
+    model_name: emergency
+
+  # Traffic Analysis Agent - Gemini Flash
+  - &traffic_model
+    <<: *gemini
+    model_name: traffic
+
+  # Road Condition Agent - Gemini Flash
+  - <<: *gemini
+    model_name: road
+
+  # Ambulance Coordination Agent - Gemini Flash
+  - <<: *gemini
+    model_name: ambulance
+
+  # Guardrail model (safety screening)
+  - model_name: security
+    <<: *bedrock
+
+routers:
+  - name: router
+    strategy: static
+    static:
+      default_model: orchestrator
