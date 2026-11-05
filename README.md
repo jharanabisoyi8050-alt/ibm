@@ -2,7 +2,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.12-blue)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green)](https://fastapi.tiangolo.com)
-[![React](https://img.shields.io/badge/React-18-blue)](https://reactjs.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.40-red)](https://streamlit.io)
 [![IBM Bob](https://img.shields.io/badge/IBM%20Bob-Agentic%20AI-purple)](https://ibm.com)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
@@ -14,7 +14,7 @@ A production-oriented **Agentic AI public safety platform** developed using **IB
 
 - **Interactive Smart Traffic Monitoring Dashboard** with real-time WebSocket feeds
 - **AI-Based Accident Risk Prediction** using XGBoost ML model
-- **Accident Hotspot Heatmaps** using DBSCAN clustering + Leaflet.js
+- **Accident Hotspot Heatmaps** using DBSCAN clustering + Plotly density maps
 - **Road Condition Monitoring** with pothole detection and visibility scoring
 - **Weather-Based Risk Analysis** via OpenWeatherMap integration
 - **Emergency Accident Reporting System** with AI-generated response recommendations
@@ -32,10 +32,10 @@ A production-oriented **Agentic AI public safety platform** developed using **IB
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│              React Dashboard (TypeScript)                │
-│         Leaflet Heatmaps | Chart.js | WebSocket         │
+│         Streamlit Multi-Page Dashboard (Python)          │
+│    Plotly Heatmaps | Scatter Maps | Interactive Charts   │
 └────────────────────────┬────────────────────────────────┘
-                         │ HTTPS / REST / WebSocket
+                         │ REST API / Direct calls
 ┌────────────────────────▼────────────────────────────────┐
 │         FastAPI Gateway + JWT Auth + Guardrails         │
 └────────────────────────┬────────────────────────────────┘
@@ -76,7 +76,6 @@ A production-oriented **Agentic AI public safety platform** developed using **IB
 
 ### Prerequisites
 - Python 3.12+
-- Node.js 20+
 - Docker & Docker Compose
 - IBM watsonx API key
 - AWS Bedrock credentials
@@ -102,16 +101,16 @@ docker-compose -f infra/docker-compose.yml up -d
 
 ### 4. Run database migrations
 ```bash
-docker exec -it backend alembic upgrade head
+docker exec -it road_accident_backend alembic upgrade head
 ```
 
 ### 5. Seed sample data
 ```bash
-docker exec -it backend python -m app.data.simulator
+docker exec -it road_accident_backend python -m app.data.simulator
 ```
 
 ### 6. Access the application
-- **Frontend Dashboard**: http://localhost:3000
+- **Streamlit Dashboard**: http://localhost:8501
 - **API Documentation**: http://localhost:8000/docs
 - **Grafana**: http://localhost:3001
 - **Prometheus**: http://localhost:9090
@@ -120,7 +119,7 @@ docker exec -it backend python -m app.data.simulator
 
 ## Development Setup
 
-### Backend
+### Backend API
 ```bash
 cd backend
 python -m venv venv
@@ -129,11 +128,11 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-### Frontend
+### Streamlit Dashboard
 ```bash
-cd frontend
-npm install
-npm run dev
+cd streamlit_app
+pip install -r requirements.txt
+streamlit run app.py
 ```
 
 ### MCP Server
@@ -198,13 +197,18 @@ ibm/
 │   ├── tests/
 │   ├── requirements.txt
 │   └── Dockerfile
-├── frontend/
-│   ├── src/
-│   │   ├── components/             # React components
-│   │   ├── pages/                  # Dashboard pages
-│   │   ├── hooks/                  # Custom React hooks
-│   │   └── services/               # API client
-│   ├── package.json
+├── streamlit_app/                  # Streamlit multi-page dashboard
+│   ├── app.py                      # Home / entry point
+│   ├── pages/
+│   │   ├── 1_Dashboard.py          # Smart traffic monitoring dashboard
+│   │   ├── 2_Hotspot_Map.py        # DBSCAN accident heatmap
+│   │   ├── 3_Traffic_Monitor.py    # Traffic density & congestion
+│   │   ├── 4_Risk_Prediction.py    # XGBoost AI risk scoring
+│   │   ├── 5_Emergency_Report.py   # Emergency reporting + HITL
+│   │   ├── 6_Ambulance.py          # Ambulance coordination
+│   │   └── 7_Admin.py              # Admin panel + cost monitoring
+│   ├── .streamlit/config.toml      # Streamlit theme config
+│   ├── requirements.txt            # streamlit, plotly, pandas, numpy
 │   └── Dockerfile
 └── infra/
     ├── docker-compose.yml
@@ -225,8 +229,8 @@ ibm/
 | Vector Database | ChromaDB + pgvector |
 | Cache | Redis 7 |
 | ML Models | XGBoost, DBSCAN (scikit-learn) |
-| Frontend | React 18 + TypeScript + Vite |
-| Maps | Leaflet.js + OpenStreetMap |
+| Frontend | Streamlit 1.40 + Plotly |
+| Maps | Plotly Mapbox (OpenStreetMap) |
 | Observability | LangSmith + Prometheus + Grafana |
 | Auth | Keycloak + JWT |
 | Guardrails | NeMo Guardrails |

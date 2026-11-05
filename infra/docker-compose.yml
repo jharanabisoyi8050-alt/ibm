@@ -81,14 +81,16 @@ services:
     depends_on:
       - backend
 
-  # Frontend
-  frontend:
+  # Streamlit Dashboard
+  streamlit:
     build:
-      context: ../frontend
+      context: ../streamlit_app
       dockerfile: Dockerfile
-    container_name: road_accident_frontend
+    container_name: road_accident_streamlit
     ports:
-      - "3000:80"
+      - "8501:8501"
+    environment:
+      API_BASE_URL: http://backend:8000
     depends_on:
       - backend
 
